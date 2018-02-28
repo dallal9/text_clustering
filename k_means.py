@@ -12,6 +12,17 @@ class KMeans(object):
         self.clusters = [[] for c in self.centers]
         self.vectors = vectors
 
+    def clear(self):
+        self.clusters=[]
+        self.vectors=[]
+
+    def get_cluster(self,vector):
+        """Get the index of the closest cluster center to `self.vector`."""
+        similarity_to_vector = lambda center: similarity(center,vector)
+        center = max(self.centers, key=similarity_to_vector)
+        return self.centers.index(center)
+
+
     def update_clusters(self):
         """Determine which cluster center each `self.vector` is closest to."""
         def closest_center_index(vector):
@@ -42,12 +53,13 @@ class KMeans(object):
         self.centers = new_centers
         return True
 
-    def main_loop(self):
+    def train(self,clear=True):
         """Perform k-means clustering."""
         self.update_clusters()
         while self.update_centers():
             self.update_clusters()
-
+        if clear:
+            self.clear()
 
 def average(sequence):
     return sum(sequence) / len(sequence)
